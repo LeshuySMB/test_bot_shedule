@@ -1,12 +1,15 @@
-from email import message
-from traceback import print_tb
-from turtle import st
 import requests
 from bs4 import BeautifulSoup as BS
 
+#Массив дней недели
 days_in_week=["Понедельник","Вторник","Среда",
               "Четверг","Пятница","Суббота","Воскресенье"]
 
+#Массив номеров пар
+number = ['1','2','3','4',
+          '5','6','7','8']
+
+#Функия парсинга расписания
 def parse_shedule(lk):
     r = requests.get(lk)
     html = BS(r.content, 'html.parser')
@@ -20,8 +23,8 @@ def parse_shedule(lk):
         
         words = ""
 
-
-        if (((day_of_week[0] == "Скачать") or (day_of_week[0] == "Группа") or (day_of_week[0] == "8-я,"))):
+        
+        if (not (day_of_week[0] in days_in_week ) and not (day_of_week[0] in number)):
             continue
         
         if (day == "" and day_of_week[0] in days_in_week):
@@ -53,6 +56,8 @@ def parse_shedule(lk):
 
     return(week)
 
+
+#Функция поиска сайта расписания группы
 def find_group(k, group_name):
     r = requests.get(f"https://ies.unitech-mo.ru/schedule_list_groups?i=0&f=0&k={k}")
     html = BS(r.content, 'html.parser')
@@ -63,23 +68,4 @@ def find_group(k, group_name):
             lk = el.a['href']
             break
     
-    return(f'https://ies.unitech-mo.ru{lk}')
-
-def print_shedule(k, group_name, fragment="неделя"):
-    week = parse_shedule((find_group(k, group_name)))
-    message = ""
-
-
-    if (fragment in days_in_week):
-        day = f"{fragment}\n ------------\n"
-        for string in week[fragment]:
-            day+=string + "\n"
-        message+=day
-    else:
-        for days in week:
-            day = f"{days}\n ------------\n"
-            for string in week[days]:
-                day+=string + "\n"
-            day+="\n"
-            message+=day
-    return(message)
+    return(f'https://ies.unitech-mo.ru{lk}')    
