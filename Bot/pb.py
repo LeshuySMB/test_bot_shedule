@@ -1,7 +1,7 @@
 import telebot
 from methods import print_shedule as print_shedule
 
-bot = telebot.TeleBot("5696685310:AAGJ7lvgINmkRW0qyB5IgOBMdxChDkt2ZKY")
+bot = telebot.TeleBot("")
 
 #Хендлер для вывода расписания
 @bot.message_handler(commands='расписание')
